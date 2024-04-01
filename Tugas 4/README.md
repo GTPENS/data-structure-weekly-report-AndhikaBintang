@@ -5,7 +5,6 @@
 Contoh 8,3 : Implementasi Stack Menggunakan Linked List
 
 #include <iostream>
-
 class ListStack {
 private:
     struct Node {
