@@ -1,108 +1,475 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/CBH6q4hO)
-# :wave: The Basics of GitHub 
+# NAMA : ANDHIKA BINTANG RATNANTO
+# NRP/Kelas : 5223600014 / Teknologi Game A - 11
+## Praktikum 4 : Stack
 
-## 🤓 Course overview and learning outcomes 
+### Contoh 8,3 : Implementasi Stack Menggunakan Linked List
 
-The goal of this course is to give you a brief introduction to GitHub. We’ll also provide you with materials for further learning and a few ideas to get you started on our platform. 🚀
+```cpp
+#include <iostream>
+class ListStack {
+private:
+    struct Node {
+        int value;
+        Node* next;
+        Node(int v, Node* n) : value(v), next(n) {}
+    };
 
-## :octocat: Git and GitHub
+    Node* head = nullptr;
+    int count = 0;
 
-Git is a **distributed Version Control System (VCS)**, which means it is a useful tool for easily tracking changes to your code, collaborating, and sharing. With Git you can track the changes you make to your project so you always have a record of what you’ve worked on and can easily revert back to an older version if need be. It also makes working with others easier—groups of people can work together on the same project and merge their changes into one final source!
+public:
+    int size() {
+        return count;
+    }
 
-GitHub is a way to use the same power of Git all online with an easy-to-use interface. It’s used across the software world and beyond to collaborate and maintain the history of projects.
+    bool Empty() {
+        return count == 0;
+    }
 
-GitHub is home to some of the most advanced technologies in the world. Whether you're visualizing data or building a new game, there's a whole community and set of tools on GitHub that can get you to the next step. This course starts with the basics of GitHub, but we'll dig into the rest later.
+    int peek() {
+        if (Empty()) {
+            throw std::runtime_error("ListStackEmptyException");
+        }
+        return head->value;
+    }
 
-## :octocat: Understanding the GitHub flow 
+    void Push(int value) {
+        head = new Node(value, head);
+        count++;
+    }
 
-The GitHub flow is a lightweight workflow that allows you to experiment and collaborate on your projects easily, without the risk of losing your previous work.
+    int Pop() {
+        if (Empty()) {
+            throw std::runtime_error("ListStackEmptyException");
+        }
+        int value = head->value;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        count--;
+        return value;
+    }
 
-### Repositories
+    void insertAtBottom(int value) {
+        if (Empty()) {
+            Push(value);
+        } else {
+            int temp = Pop();
+            insertAtBottom(value);
+            Push(temp);
+        }
+    }
 
-A repository is where your project work happens--think of it as your project folder. It contains all of your project’s files and revision history.  You can work within a repository alone or invite others to collaborate with you on those files.
+    void print() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            std::cout << temp->value << " ";
+            temp = temp->next;
+        }
+    }
+};
 
-### Cloning 
+int main() {
+    ListStack s;
+    for (int i = 1; i <= 100; i++)
+        s.Push(i);
+    for (int i = 1; i <= 50; i++)
+        s.Pop();
+    s.print();
 
-When a repository is created with GitHub, it’s stored remotely in the ☁️. You can clone a repository to create a local copy on your computer and then use Git to sync the two. This makes it easier to fix issues, add or remove files, and push larger commits. You can also use the editing tool of your choice as opposed to the GitHub UI. Cloning a repository also pulls down all the repository data that GitHub has at that point in time, including all versions of every file and folder for the project! This can be helpful if you experiment with your project and then realize you liked a previous version more. 
-To learn more about cloning, read ["Cloning a Repository"](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository). 
+    return 0;
+}
+```
 
-### Committing and pushing
-**Committing** and **pushing** are how you can add the changes you made on your local machine to the remote repository in GitHub. That way your instructor and/or teammates can see your latest work when you’re ready to share it. You can make a commit when you have made changes to your project that you want to “checkpoint.” You can also add a helpful **commit message** to remind yourself or your teammates what work you did (e.g. “Added a README with information about our project”).
+### Program di atas adalah 
+implementasi dari struktur data tumpukan (stack) menggunakan linked list dalam bahasa C++. Berikut adalah rangkumannya:
 
-Once you have a commit or multiple commits that you’re ready to add to your repository, you can use the push command to add those changes to your remote repository. Committing and pushing may feel new at first, but we promise you’ll get used to it 🙂
+- **Kelas ListStack**: Ini adalah kelas utama yang mengimplementasikan tumpukan. Di dalamnya, terdapat struktur data `Node` yang merepresentasikan elemen tumpukan dalam bentuk simpul (node) dari linked list.
+- **Struktur Node**: Digunakan untuk merepresentasikan setiap elemen dalam tumpukan. Setiap node memiliki dua atribut: `value` untuk menyimpan nilai elemen dan `next` untuk menunjukkan node selanjutnya dalam linked list.
+- **Variabel-variabel**: `head` adalah pointer yang menunjuk ke elemen paling atas tumpukan (top of stack), dan `count` digunakan untuk menyimpan jumlah elemen dalam tumpukan.
+- **Metode `size()`**: Mengembalikan jumlah elemen dalam tumpukan.
+- **Metode `Empty()`**: Mengembalikan `true` jika tumpukan kosong, dan `false` jika tidak.
+- **Metode `peek()`**: Mengembalikan nilai dari elemen paling atas tumpukan tanpa menghapusnya. Jika tumpukan kosong, akan memunculkan pengecualian.
+- **Metode `Push(int value)`**: Menambahkan elemen baru ke atas tumpukan dengan nilai yang diberikan.
+- **Metode `Pop()`**: Menghapus elemen paling atas tumpukan dan mengembalikan nilainya. Jika tumpukan kosong, akan memunculkan pengecualian.
+- **Metode `insertAtBottom(int value)`**: Memasukkan nilai ke dalam tumpukan pada posisi paling bawah dengan cara rekursif. Metode ini memanfaatkan rekursi dan metode `Push()` dan `Pop()`.
+- **Metode `print()`**: Mencetak nilai semua elemen dalam tumpukan dari atas ke bawah.
+- **Fungsi `main()`**: Membuat objek dari kelas `ListStack`, menambahkan 100 elemen ke dalamnya, menghapus 50 elemen, dan mencetak elemen-elemen yang tersisa.
 
-## 💻 GitHub terms to know 
+### Contoh 8,4 : Keseimbangan Simbol
 
-### Repositories 
-We mentioned repositories already, they are where your project work happens, but let’s talk a bit more about the details of them! As you work more on GitHub you will have many repositories which may feel confusing at first. Fortunately, your ["GitHub dashboard"](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/about-your-personal-dashboard) helps to easily navigate to your repositories and see useful information about them. Make sure you’re logged in to see it!
+```cpp
+#include <iostream>
+#include <stack>
+#include <string>
 
-Repositories also contain **README**s. You can add a README file to your repository to tell other people why your project is useful, what they can do with your project, and how they can use it. We are using this README to communicate how to learn Git and GitHub with you. 😄 
-To learn more about repositories read ["Creating, Cloning, and Archiving Repositories](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repositories) and ["About README's"](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-readmes). 
+bool isBalancedParenthesis(const std::string& expn) {
+    std::stack<char> stk;
+    for (char ch : expn) {
+        switch (ch) {
+            case '{':
+            case '[':
+            case '(':
+                stk.push(ch);
+                break;
+            case '}':
+                if (stk.empty() || stk.top() != '{') {
+                    return false;
+                }
+                stk.pop();
+                break;
+            case ']':
+                if (stk.empty() || stk.top() != '[') {
+                    return false;
+                }
+                stk.pop();
+                break;
+            case ')':
+                if (stk.empty() || stk.top() != '(') {
+                    return false;
+                }
+                stk.pop();
+                break;
+        }
+    }
+    return stk.empty();
+}
 
-### Branches
-You can use branches on GitHub to isolate work that you do not want merged into your final project just yet. Branches allow you to develop features, fix bugs, or safely experiment with new ideas in a contained area of your repository. Typically, you might create a new branch from the default branch of your repository—main. This makes a new working copy of your repository for you to experiment with. Once your new changes have been reviewed by a teammate, or you are satisfied with them, you can merge your changes into the default branch of your repository.
-To learn more about branching, read ["About Branches"](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-branches).
+int main() {
+    std::string expn = "{()}[";
+    bool value = isBalancedParenthesis(expn);
+    std::cout << "Given Expn: " << expn << std::endl;
+    std::cout << "Result after isParenthesisMatched: " << std::boolalpha << value << std::endl;
 
-### Forks
-A fork is another way to copy a repository, but is usually used when you want to contribute to someone else’s project. Forking a repository allows you to freely experiment with changes without affecting the original project and is very popular when contributing to open source software projects!
-To learn more about forking, read ["Fork a repo"](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
+    return 0;
+}
+```
+### Program di atas adalah 
+implementasi fungsi `isBalancedParenthesis()` dalam bahasa C++. Fungsi ini bertujuan untuk memeriksa apakah urutan kurung buka dan kurung tutup dalam sebuah ekspresi matematika atau logika telah seimbang.
 
-### Pull requests
-When working with branches, you can use a pull request to tell others about the changes you want to make and ask for their feedback. Once a pull request is opened, you can discuss and review the potential changes with collaborators and add more changes if need be. You can add specific people as reviewers of your pull request which shows you want their feedback on your changes! Once a pull request is ready-to-go, it can be merged into your main branch.
-To learn more about pull requests, read ["About Pull Requests"](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests). 
+- Fungsi `isBalancedParenthesis()` menerima string `expn` yang merupakan ekspresi yang akan diperiksa keseimbangannya.
+- Di dalam fungsi tersebut, kita menggunakan objek `std::stack` dari pustaka standar C++ untuk menyimpan karakter kurung buka yang ditemukan.
+- Selama iterasi melalui setiap karakter dalam `expn`, karakter kurung buka disimpan dalam tumpukan.
+- Ketika ditemui karakter kurung tutup, kita memeriksa apakah tumpukan kosong atau apakah karakter kurung buka yang sesuai berada di atas tumpukan. Jika tidak, itu berarti ekspresi tidak seimbang, dan fungsi mengembalikan `false`.
+- Jika karakter kurung tutup cocok dengan karakter kurung buka yang sesuai di tumpukan, kita menghapus karakter tersebut dari tumpukan.
+- Setelah iterasi selesai, jika tumpukan kosong, itu berarti semua kurung buka telah ditutup dengan benar, dan fungsi mengembalikan `true`; jika tidak, itu berarti masih ada kurung buka yang tidak tertutup, dan fungsi mengembalikan `false`.
+- Fungsi `main()` menggunakan fungsi `isBalancedParenthesis()` untuk memeriksa ekspresi `{()}[`, kemudian mencetak hasilnya ke konsol.
 
+### Contoh 8,5 : Konversi Infix menjadi Postfix 
 
-### Issues
-Issues are a way to track enhancements, tasks, or bugs for your work on GitHub. Issues are a great way to keep track of all the tasks you want to work on for your project and let others know what you plan to work on. You can also use issues to tell a favorite open source project about a bug you found or a feature you think would be great to add!
+```cpp
+#include <iostream>
+#include <stack>
+#include <string>
 
-For larger projects, you can keep track of many issues on a project board. GitHub Projects help you organize and prioritize your work and you can read more about them [in this "About Project boards document](https://docs.github.com/en/github/managing-your-work-on-github/about-project-boards). You likely won’t need a project board for your assignments, but once you move on to even bigger projects, they’re a great way to organize your team’s work!
-You can also link together pull requests and issues to show that a fix is in progress and to automatically close the issue when someone merges the pull request.
-To learn more about issues and linking them to your pull requests, read ["About Issues"](https://docs.github.com/en/github/managing-your-work-on-github/about-issues). 
+int precedence(char op) {
+    if (op == '^')
+        return 3;
+    else if (op == '*' || op == '/' || op == '%')
+        return 2;
+    else if (op == '+' || op == '-')
+        return 1;
+    else
+        return -1;
+}
 
-### Your user profile
+std::string infixToPostfix(const std::string& expn) {
+    std::stack<char> stk;
+    std::string output = "";
+    char temp;
+    for (char ch : expn) {
+        if (ch >= '0' && ch <= '9') {
+            output += ch;
+        } else {
+            switch (ch) {
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '%':
+                case '^':
+                    while (!stk.empty() && precedence(ch) <= precedence(stk.top())) {
+                        temp = stk.top();
+                        stk.pop();
+                        output += " ";
+                        output += temp;
+                    }
+                    stk.push(ch);
+                    output += " ";
+                    break;
+                case '(':
+                    stk.push(ch);
+                    break;
+                case ')':
+                    while (!stk.empty() && (temp = stk.top()) != '(') {
+                        stk.pop();
+                        output += " ";
+                        output += temp;
+                        output += " ";
+                    }
+                    stk.pop();
+                    break;
+            }
+        }
+    }
+    while (!stk.empty()) {
+        temp = stk.top();
+        stk.pop();
+        output += " ";
+        output += temp;
+    }
+    return output;
+}
 
-Your profile page tells people the story of your work through the repositories you're interested in, the contributions you've made, and the conversations you've had. You can also give the world a unique view into who you are with your profile README. You can use your profile to let future employers know all about you! 
-To learn more about your user profile and adding and updating your profile README, read ["Managing Your Profile README"](https://docs.github.com/en/github/setting-up-and-managing-your-github-profile/managing-your-profile-readme). 
+int main() {
+    std::string expn = "10+((3))*5/(16-4)";
+    std::string value = infixToPostfix(expn);
+    std::cout << "Infix Expn: " << expn << std::endl;
+    std::cout << "Postfix Expn: " << value << std::endl;
 
-### Using markdown on GitHub 
+    return 0;
+}
+```
+### Program di atas adalah
+mengimplementasikan fungsi `infixToPostfix` dalam bahasa C++. Fungsi ini bertujuan untuk mengonversi ekspresi matematika dalam bentuk infix menjadi bentuk postfix.
 
-You might have noticed already, but you can add some fun styling to your issues, pull requests, and files. ["Markdown"](https://guides.github.com/features/mastering-markdown/) is an easy way to style your issues, pull requests, and files with some simple syntax. This can be helpful to organize your information and make it easier for others to read. You can also drop in gifs and images to help convey your point!
-To learn more about using GitHub’s flavor of markdown, read ["Basic Writing and Formatting Syntax"](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax). 
+- Fungsi `precedence` digunakan untuk menentukan prioritas operator. Operator dengan prioritas yang lebih tinggi memiliki nilai yang lebih tinggi.
+- Fungsi `infixToPostfix` menerima string `expn` yang merupakan ekspresi matematika dalam bentuk infix.
+- Selama iterasi melalui setiap karakter dalam `expn`, karakter angka ditambahkan langsung ke output, sedangkan operator dan tanda kurung diatur menggunakan tumpukan (`std::stack<char>`).
+- Ketika ditemukan operator, program memeriksa prioritasnya dengan operator di tumpukan. Jika prioritas operator yang baru lebih rendah atau sama dengan operator di tumpukan, operator di tumpukan dipindahkan ke output sebelum operator baru ditambahkan ke tumpukan.
+- Ketika ditemukan tanda kurung buka (`(`), program langsung menambahkannya ke tumpukan.
+- Ketika ditemukan tanda kurung tutup (`)`), program mengeluarkan operator dari tumpukan dan menambahkannya ke output sampai menemukan tanda kurung buka yang sesuai.
+- Setelah selesai iterasi, program mengeluarkan semua operator yang tersisa dari tumpukan ke output.
+- Fungsi `main` digunakan untuk menguji fungsi `infixToPostfix`, mengonversi ekspresi infix `"10+((3))*5/(16-4)"` menjadi bentuk postfix, dan mencetak hasilnya ke konsol.
 
-### Engaging with the GitHub community
+### Contoh 8,6 : Konversi Infix menjadi Prefix
 
-The GitHub community is vast. There are many types of people who use GitHub in their day to day—students like you, professional developers, hobbyists working on open source projects, and explorers who are just jumping into the world of software development on their own. There are many ways you can interact with the larger GitHub community, but here are three places where you can start. 
+```cpp
+#include <iostream>
+#include <string>
+#include <stack>
+#include <algorithm>
 
-#### Starring repositories 
+int precedence(char op) {
+    if (op == '^')
+        return 3;
+    else if (op == '*' || op == '/' || op == '%')
+        return 2;
+    else if (op == '+' || op == '-')
+        return 1;
+    else
+        return -1;
+}
 
-If you find a repository interesting or you want to keep track of it, star it! When you star a repository it’s also used as a signal to surface better recommendations on github.com/explore. If you’d like to get back to your starred repositories you can do so via your user profile. 
-To learn  more about starring repositories, read ["Saving Repositories with Stars"](https://docs.github.com/en/github/getting-started-with-github/saving-repositories-with-stars). 
+void replaceParanthesis(char* a, int length) {
+    for (int i = 0; i < length; ++i) {
+        if (a[i] == '(') {
+            a[i] = ')';
+        } else if (a[i] == ')') {
+            a[i] = '(';
+        }
+    }
+}
 
-#### Following users 
+void reverseString(char* expn, int length) {
+    int lower = 0;
+    int upper = length - 1;
+    char tempChar;
+    while (lower < upper) {
+        tempChar = expn[lower];
+        expn[lower] = expn[upper];
+        expn[upper] = tempChar;
+        lower++;
+        upper--;
+    }
+}
 
-You can follow people on GitHub to receive notifications about their activity and discover projects in their communities. When you follow a user, their public GitHub activity will show up on your dashboard so you can see all the cool things they are working on. 
-To learn more about following users, read ["Following People"](https://docs.github.com/en/github/getting-started-with-github/following-people).
+std::string infixToPostfix(std::string expn) {
+    std::stack<char> stk;
+    std::string output = "";
+    char temp;
+    for (char ch : expn) {
+        if (ch >= '0' && ch <= '9') {
+            output += ch;
+        } else {
+            switch (ch) {
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '%':
+                case '^':
+                    while (!stk.empty() && precedence(ch) <= precedence(stk.top())) {
+                        temp = stk.top();
+                        stk.pop();
+                        output += " ";
+                        output += temp;
+                    }
+                    stk.push(ch);
+                    output += " ";
+                    break;
+                case '(':
+                    stk.push(ch);
+                    break;
+                case ')':
+                    while (!stk.empty() && (temp = stk.top()) != '(') {
+                        stk.pop();
+                        output += " ";
+                        output += temp;
+                        output += " ";
+                    }
+                    stk.pop();
+                    break;
+            }
+        }
+    }
+    while (!stk.empty()) {
+        temp = stk.top();
+        stk.pop();
+        output += " ";
+        output += temp;
+    }
+    return output;
+}
 
-#### Browsing GitHub Explore 
+std::string infixToPrefix(std::string expn) {
+    std::reverse(expn.begin(), expn.end());
+    replaceParanthesis(&expn[0], expn.length());
+    expn = infixToPostfix(expn);
+    std::reverse(expn.begin(), expn.end());
+    return expn;
+}
 
-GitHub Explore is a great place to do just that … explore :smile: You can find new projects, events, and developers to interact with.
+int main() {
+    std::string expn = "10+((3))*5/(16-4)";
+    std::string value = infixToPrefix(expn);
+    std::cout << "Infix Expn: " << expn << std::endl;
+    std::cout << "Prefix Expn: " << value << std::endl;
 
-You can check out the GitHub Explore website [at github.com/explore](https://github.com/explore). The more you intereact with GitHub the more tailored your Explore view will be. 
+    return 0;
+}
+```
+### Program di atas adalah 
+sebuah program dalam bahasa C++ yang mengonversi ekspresi matematika dari bentuk infix menjadi bentuk prefix. 
 
-## 📝 Optional next steps 
+- Fungsi `precedence` digunakan untuk menentukan prioritas operator.
+- Fungsi `replaceParanthesis` digunakan untuk mengubah tanda kurung buka menjadi tanda kurung tutup, dan sebaliknya.
+- Fungsi `reverseString` digunakan untuk membalikkan string.
+- Fungsi `infixToPostfix` mengonversi ekspresi infix menjadi bentuk postfix.
+- Fungsi `infixToPrefix` mengonversi ekspresi infix menjadi bentuk prefix dengan cara membalikkan string, mengganti tanda kurung, mengonversi ke postfix, dan membalikkan kembali hasilnya.
+- Di dalam `main`, ekspresi infix `"10+((3))*5/(16-4)"` dikonversi menjadi bentuk prefix menggunakan fungsi `infixToPrefix`, dan hasilnya dicetak ke konsol.
 
-* Open a pull request and let your teacher know that you’ve finished this course.  
-* Create a new markdown file in this repository. Let them know what you learned and what you are still confused about! Experiment with different styles!
-* Create your profile README. Let the world know a little bit more about you! What are you interested in learning? What are you working on? What's your favorite hobby? Learn more about creating your profile README in the document, ["Managing Your Profile README"](https://docs.github.com/en/github/setting-up-and-managing-your-github-profile/managing-your-profile-readme).
-* Go to your user dashboard and create a new repository. Experiment with the features within that repository to familiarize yourself with them. 
-* [Let us know what you liked or didn’t like about the content of this course](https://support.github.com/contact/education). What would you like to see more of? What would be interesting or helpful to your learning journey? 
+### Contoh 8,7 : Evaluasi Postfix
 
-## 📚  Resources 
-* [A short video explaining what GitHub is](https://www.youtube.com/watch?v=w3jLJU7DT5E&feature=youtu.be) 
-* [Git and GitHub learning resources](https://docs.github.com/en/github/getting-started-with-github/git-and-github-learning-resources) 
-* [Understanding the GitHub flow](https://guides.github.com/introduction/flow/)
-* [How to use GitHub branches](https://www.youtube.com/watch?v=H5GJfcp3p4Q&feature=youtu.be)
-* [Interactive Git training materials](https://githubtraining.github.io/training-manual/#/01_getting_ready_for_class)
-* [GitHub's Learning Lab](https://lab.github.com/)
-* [Education community forum](https://education.github.community/)
-* [GitHub community forum](https://github.community/)
+```cpp
+#include <iostream>
+#include <stack>
+#include <string>
+
+int postfixEvaluate(std::string expn) {
+    std::stack<int> stk;
+    size_t pos = 0;
+    while (pos < expn.length()) {
+        if (expn[pos] == ' ') {
+            pos++;
+            continue;
+        }
+        if (expn[pos] == '+' || expn[pos] == '-' || expn[pos] == '*' || expn[pos] == '/') {
+            int num2 = stk.top();
+            stk.pop();
+            int num1 = stk.top();
+            stk.pop();
+            switch (expn[pos]) {
+                case '+':
+                    stk.push(num1 + num2);
+                    break;
+                case '-':
+                    stk.push(num1 - num2);
+                    break;
+                case '*':
+                    stk.push(num1 * num2);
+                    break;
+                case '/':
+                    stk.push(num1 / num2);
+                    break;
+            }
+        } else {
+            int num = std::stoi(expn.substr(pos));
+            stk.push(num);
+            while (pos < expn.length() && expn[pos] != ' ')
+                pos++;
+        }
+        pos++;
+    }
+    return stk.top();
+}
+
+int main() {
+    std::string expn = "6 5 2 3 + 8 * + 3 + *";
+    int value = postfixEvaluate(expn);
+    std::cout << "Given Postfix Expn: " << expn << std::endl;
+    std::cout << "Result after Evaluation: " << value << std::endl;
+    return 0;
+}
+```
+
+### Program di atas adalah 
+implementasi dari evaluasi ekspresi postfix menggunakan stack dalam bahasa C++. 
+
+- Fungsi `postfixEvaluate` mengambil string ekspresi postfix sebagai input dan mengembalikan hasil evaluasi ekspresi tersebut.
+- Dalam fungsi `postfixEvaluate`, kita menggunakan stack untuk menyimpan operan dan melakukan operasi ketika menemui operator.
+- Iterasi dilakukan pada string ekspresi postfix. Jika karakter yang ditemui adalah spasi, kita lanjutkan ke karakter berikutnya. Jika karakter adalah operator (`+`, `-`, `*`, `/`), kita ambil dua operand dari stack, lakukan operasi yang sesuai, dan hasilnya dimasukkan kembali ke stack.
+- Jika karakter adalah operand, kita konversi string menjadi integer menggunakan `std::stoi` dan masukkan nilai tersebut ke dalam stack. Kami memeriksa apakah karakter berikutnya adalah spasi untuk menemukan batas operand yang tepat.
+- Setelah iterasi selesai, nilai teratas dalam stack adalah hasil evaluasi ekspresi postfix, yang kemudian dikembalikan.
+- Di dalam fungsi `main`, kita menggunakan string ekspresi postfix `"6 5 2 3 + 8 * + 3 + *"` sebagai contoh, dan mencetak hasil evaluasinya.
+
+### Palindrome String Menggunakan Stack: 
+
+```cpp
+#include <iostream>
+#include <stack>
+#include <string>
+
+bool isPalindrome(const std::string& str) {
+    std::stack<char> charStack;
+    int length = str.length();
+
+    // Push characters from the first half of the string into the stack
+    for (int i = 0; i < length / 2; ++i) {
+        charStack.push(str[i]);
+    }
+
+    int i = length / 2 + (length % 2); // Starting index for comparison
+    while (!charStack.empty() && i < length) {
+        if (str[i] != charStack.top()) {
+            return false; // Not a palindrome
+        }
+        charStack.pop();
+        ++i;
+    }
+
+    return true; // Palindrome
+}
+
+int main() {
+    std::string str;
+    std::cout << "Enter a string: ";
+    std::cin >> str;
+
+    if (isPalindrome(str)) {
+        std::cout << "The string \"" << str << "\" is a palindrome." << std::endl;
+    } else {
+        std::cout << "The string \"" << str << "\" is not a palindrome." << std::endl;
+    }
+
+    return 0;
+}
+```
+### Program di atas adalah 
+sebuah program C++ yang bertujuan untuk menentukan apakah sebuah string merupakan palindrome atau bukan menggunakan konsep stack. Berikut rangkuman penjelasan singkatnya:
+
+- Fungsi `isPalindrome` menerima sebuah string sebagai parameter dan mengembalikan nilai boolean yang menunjukkan apakah string tersebut adalah palindrome atau tidak.
+- Dalam fungsi `isPalindrome`, karakter-karakter dari setengah pertama string dimasukkan ke dalam stack.
+- Kemudian, dilakukan iterasi pada setengah kedua string untuk membandingkan karakternya dengan karakter yang dikeluarkan dari stack. Jika ada perbedaan, maka string tersebut bukan palindrome.
+- Program kemudian mencetak pesan yang sesuai berdasarkan hasil pengecekan.
+- Fungsi `main` mengambil input string dari pengguna dan memanggil fungsi `isPalindrome` untuk menentukan apakah string tersebut palindrome atau tidak.
