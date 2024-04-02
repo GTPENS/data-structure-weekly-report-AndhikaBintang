@@ -116,25 +116,50 @@ Fungsi `main()` adalah program utama yang menunjukkan penggunaan kelas `Queue`. 
 ### Contoh 9,3 :
 
 ```cpp
-void add(int value) {
-    Node* temp = new Node(value, nullptr);
-    if (head == nullptr) {
-        head = tail = temp;
-    } else {
-        tail->next = temp;
-        tail = temp;
-    }
-    count++;
-}
+#include <iostream>
+#include <stdexcept>
 
+class Queue {
+private:
+    struct Node {
+        int value;
+        Node* next;
+        Node(int v, Node* n) : value(v), next(n) {}
+    };
+
+    Node* head = nullptr;
+    Node* tail = nullptr;
+    int count = 0;
+
+public:
+    void add(int value) {
+        Node* temp = new Node(value, nullptr);
+        if (head == nullptr) {
+            head = tail = temp;
+        } else {
+            tail->next = temp;
+            tail = temp;
+        }
+        count++;
+    }
+};
+
+int main() {
+    Queue q;
+    q.add(1);
+    q.add(2);
+    q.add(3);
+
+    return 0;
+}
 ```
 ### Program di atas adalah 
-implementasi metode `add` dalam kelas `Queue` yang bertujuan untuk menambahkan elemen baru ke dalam antrian. Berikut rangkuman penjelasannya:
+implementasi dari sebuah antrian (queue) sederhana dalam bahasa C++.
 
-1. Sebuah node baru (`temp`) dibuat dengan nilai yang diberikan dan `next` diatur menjadi `nullptr`.
-2. Jika `head` adalah `nullptr`, yang menandakan antrian kosong, maka `head` dan `tail` diatur untuk menunjuk ke node baru tersebut.
-3. Jika tidak, yaitu jika antrian tidak kosong, maka node baru (`temp`) ditambahkan sebagai elemen terakhir dalam antrian dengan mengatur `next` dari `tail` menjadi `temp`, kemudian `tail` diperbarui untuk menunjuk ke node baru tersebut.
-4. Setelah menambahkan elemen baru, jumlah elemen dalam antrian (`count`) diperbarui dengan menambahkan 1.
+- Kelas `Queue` memiliki struktur data internal `Node`, yang merepresentasikan elemen-elemen dalam antrian. Setiap node memiliki dua anggota: `value` untuk menyimpan nilai dari elemen dan `next` untuk menunjukkan ke node selanjutnya dalam antrian.
+- Kelas `Queue` memiliki tiga atribut data pribadi: `head` (pointer ke elemen pertama dalam antrian), `tail` (pointer ke elemen terakhir dalam antrian), dan `count` (jumlah elemen dalam antrian).
+- Metode `add(int value)` digunakan untuk menambahkan elemen baru ke dalam antrian. Elemen baru dibuat sebagai node baru dengan nilai yang diberikan, dan kemudian ditambahkan ke dalam antrian. Jika antrian masih kosong, maka elemen baru akan menjadi elemen pertama dan terakhir dalam antrian. Jika tidak, maka elemen baru akan ditambahkan setelah elemen terakhir, dan kemudian tail akan diperbarui.
+- Di dalam fungsi `main()`, sebuah objek `q` dari kelas `Queue` dibuat, dan beberapa elemen (1, 2, dan 3) ditambahkan ke dalam antrian menggunakan metode `add()`.
 
 ### Contoh 9,4
 
