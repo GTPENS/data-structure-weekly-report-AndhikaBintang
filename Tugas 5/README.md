@@ -1,12 +1,14 @@
 # NAMA : ANDHIKA BINTANG RATNANTO
 # NRP/Kelas : 5223600014 / Teknologi Game A - 11
-## Praktikum 4 : Stack
+## Praktikum 5 : Queue
 
-### Contoh 8,3 : Implementasi Stack Menggunakan Linked List
+### Contoh 9,2 : Queue Menggunakan Linked List
 
 ```cpp
 #include <iostream>
-class ListStack {
+#include <stdexcept>
+
+class Queue {
 private:
     struct Node {
         int value;
@@ -15,6 +17,7 @@ private:
     };
 
     Node* head = nullptr;
+    Node* tail = nullptr;
     int count = 0;
 
 public:
@@ -26,21 +29,36 @@ public:
         return count == 0;
     }
 
+    void print() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            std::cout << temp->value << " ";
+            temp = temp->next;
+        }
+        std::cout << std::endl;
+    }
+
     int peek() {
         if (Empty()) {
-            throw std::runtime_error("ListStackEmptyException");
+            throw std::runtime_error("QueueEmptyException");
         }
         return head->value;
     }
 
-    void Push(int value) {
-        head = new Node(value, head);
+    void enqueue(int value) {
+        Node* newNode = new Node(value, nullptr);
+        if (Empty()) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
         count++;
     }
 
-    int Pop() {
+    int dequeue() {
         if (Empty()) {
-            throw std::runtime_error("ListStackEmptyException");
+            throw std::runtime_error("QueueEmptyException");
         }
         int value = head->value;
         Node* temp = head;
@@ -50,14 +68,99 @@ public:
         return value;
     }
 
-    void insertAtBottom(int value) {
-        if (Empty()) {
-            Push(value);
-        } else {
-            int temp = Pop();
-            insertAtBottom(value);
-            Push(temp);
+    ~Queue() {
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
         }
+    }
+};
+
+int main() {
+    Queue q;
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+
+    std::cout << "Queue size: " << q.size() << std::endl;
+    std::cout << "Queue elements: ";
+    q.print();
+
+    std::cout << "Front element: " << q.peek() << std::endl;
+
+    std::cout << "Dequeue: " << q.dequeue() << std::endl;
+    std::cout << "Queue size after dequeue: " << q.size() << std::endl;
+    std::cout << "Queue elements after dequeue: ";
+    q.print();
+
+    return 0;
+}
+
+```
+
+### Program di atas adalah
+implementasi dari kelas `Queue` dalam C++. 
+
+- Kelas `Queue` memiliki tiga atribut data pribadi (`head`, `tail`, `count`) dan sebuah struktur internal `Node` yang merepresentasikan elemen-elemen dalam antrian.
+- Metode `size()` digunakan untuk mengembalikan jumlah elemen dalam antrian.
+- Metode `Empty()` mengembalikan `true` jika antrian kosong, dan `false` jika tidak.
+- Metode `print()` mencetak semua elemen dalam antrian.
+- Metode `peek()` mengembalikan nilai dari elemen pertama dalam antrian tanpa menghapusnya. Jika antrian kosong, metode ini akan melemparkan pengecualian `std::runtime_error`.
+- Metode `enqueue(int value)` menambahkan elemen baru ke dalam antrian.
+- Metode `dequeue()` menghapus dan mengembalikan nilai dari elemen pertama dalam antrian. Jika antrian kosong, metode ini juga akan melemparkan pengecualian `std::runtime_error`.
+- Destruktor (`~Queue()`) digunakan untuk membersihkan memori yang dialokasikan untuk elemen-elemen antrian.
+
+Fungsi `main()` adalah program utama yang menunjukkan penggunaan kelas `Queue`. Program tersebut membuat objek `q` dari kelas `Queue`, menambahkan beberapa elemen ke antrian, mencetak ukuran antrian dan elemen-elemennya, mengambil nilai dari elemen pertama tanpa menghapusnya, menghapus elemen pertama, dan mencetak ukuran antrian dan elemen-elemennya lagi untuk menunjukkan efek dari operasi enqueue dan dequeue.
+
+### Contoh 9,3 :
+
+```cpp
+void add(int value) {
+    Node* temp = new Node(value, nullptr);
+    if (head == nullptr) {
+        head = tail = temp;
+    } else {
+        tail->next = temp;
+        tail = temp;
+    }
+    count++;
+}
+
+```
+### Program di atas adalah 
+implementasi metode `add` dalam kelas `Queue` yang bertujuan untuk menambahkan elemen baru ke dalam antrian. Berikut rangkuman penjelasannya:
+
+1. Sebuah node baru (`temp`) dibuat dengan nilai yang diberikan dan `next` diatur menjadi `nullptr`.
+2. Jika `head` adalah `nullptr`, yang menandakan antrian kosong, maka `head` dan `tail` diatur untuk menunjuk ke node baru tersebut.
+3. Jika tidak, yaitu jika antrian tidak kosong, maka node baru (`temp`) ditambahkan sebagai elemen terakhir dalam antrian dengan mengatur `next` dari `tail` menjadi `temp`, kemudian `tail` diperbarui untuk menunjuk ke node baru tersebut.
+4. Setelah menambahkan elemen baru, jumlah elemen dalam antrian (`count`) diperbarui dengan menambahkan 1.
+
+### Contoh 9,4
+
+```cpp
+#include <iostream>
+#include <stdexcept>
+
+class Queue {
+private:
+    struct Node {
+        int value;
+        Node* next;
+        Node(int v, Node* n) : value(v), next(n) {}
+    };
+
+    Node* head = nullptr;
+    Node* tail = nullptr;
+    int count = 0;
+
+public:
+    int size() {
+        return count;
+    }
+
+    bool Empty() {
+        return count == 0;
     }
 
     void print() {
@@ -66,410 +169,259 @@ public:
             std::cout << temp->value << " ";
             temp = temp->next;
         }
+        std::cout << std::endl;
+    }
+
+    int remove() {
+        if (Empty()) {
+            throw std::runtime_error("QueueEmptyException");
+        }
+        int value = head->value;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        count--;
+        return value;
+    }
+
+    void add(int value) {
+        Node* temp = new Node(value, nullptr);
+        if (head == nullptr) {
+            head = tail = temp;
+        } else {
+            tail->next = temp;
+            tail = temp;
+        }
+        count++;
+    }
+
+    ~Queue() {
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
     }
 };
 
 int main() {
-    ListStack s;
-    for (int i = 1; i <= 100; i++)
-        s.Push(i);
-    for (int i = 1; i <= 50; i++)
-        s.Pop();
-    s.print();
-
-    return 0;
-}
-```
-
-### Program di atas adalah 
-implementasi dari struktur data tumpukan (stack) menggunakan linked list dalam bahasa C++. Berikut adalah rangkumannya:
-
-- **Kelas ListStack**: Ini adalah kelas utama yang mengimplementasikan tumpukan. Di dalamnya, terdapat struktur data `Node` yang merepresentasikan elemen tumpukan dalam bentuk simpul (node) dari linked list.
-- **Struktur Node**: Digunakan untuk merepresentasikan setiap elemen dalam tumpukan. Setiap node memiliki dua atribut: `value` untuk menyimpan nilai elemen dan `next` untuk menunjukkan node selanjutnya dalam linked list.
-- **Variabel-variabel**: `head` adalah pointer yang menunjuk ke elemen paling atas tumpukan (top of stack), dan `count` digunakan untuk menyimpan jumlah elemen dalam tumpukan.
-- **Metode `size()`**: Mengembalikan jumlah elemen dalam tumpukan.
-- **Metode `Empty()`**: Mengembalikan `true` jika tumpukan kosong, dan `false` jika tidak.
-- **Metode `peek()`**: Mengembalikan nilai dari elemen paling atas tumpukan tanpa menghapusnya. Jika tumpukan kosong, akan memunculkan pengecualian.
-- **Metode `Push(int value)`**: Menambahkan elemen baru ke atas tumpukan dengan nilai yang diberikan.
-- **Metode `Pop()`**: Menghapus elemen paling atas tumpukan dan mengembalikan nilainya. Jika tumpukan kosong, akan memunculkan pengecualian.
-- **Metode `insertAtBottom(int value)`**: Memasukkan nilai ke dalam tumpukan pada posisi paling bawah dengan cara rekursif. Metode ini memanfaatkan rekursi dan metode `Push()` dan `Pop()`.
-- **Metode `print()`**: Mencetak nilai semua elemen dalam tumpukan dari atas ke bawah.
-- **Fungsi `main()`**: Membuat objek dari kelas `ListStack`, menambahkan 100 elemen ke dalamnya, menghapus 50 elemen, dan mencetak elemen-elemen yang tersisa.
-
-### Contoh 8,4 : Keseimbangan Simbol
-
-```cpp
-#include <iostream>
-#include <stack>
-#include <string>
-
-bool isBalancedParenthesis(const std::string& expn) {
-    std::stack<char> stk;
-    for (char ch : expn) {
-        switch (ch) {
-            case '{':
-            case '[':
-            case '(':
-                stk.push(ch);
-                break;
-            case '}':
-                if (stk.empty() || stk.top() != '{') {
-                    return false;
-                }
-                stk.pop();
-                break;
-            case ']':
-                if (stk.empty() || stk.top() != '[') {
-                    return false;
-                }
-                stk.pop();
-                break;
-            case ')':
-                if (stk.empty() || stk.top() != '(') {
-                    return false;
-                }
-                stk.pop();
-                break;
-        }
+    Queue q;
+    for (int i = 1; i <= 100; i++) {
+        q.add(i);
     }
-    return stk.empty();
-}
-
-int main() {
-    std::string expn = "{()}[";
-    bool value = isBalancedParenthesis(expn);
-    std::cout << "Given Expn: " << expn << std::endl;
-    std::cout << "Result after isParenthesisMatched: " << std::boolalpha << value << std::endl;
-
-    return 0;
-}
-```
-### Program di atas adalah 
-implementasi fungsi `isBalancedParenthesis()` dalam bahasa C++. Fungsi ini bertujuan untuk memeriksa apakah urutan kurung buka dan kurung tutup dalam sebuah ekspresi matematika atau logika telah seimbang.
-
-- Fungsi `isBalancedParenthesis()` menerima string `expn` yang merupakan ekspresi yang akan diperiksa keseimbangannya.
-- Di dalam fungsi tersebut, kita menggunakan objek `std::stack` dari pustaka standar C++ untuk menyimpan karakter kurung buka yang ditemukan.
-- Selama iterasi melalui setiap karakter dalam `expn`, karakter kurung buka disimpan dalam tumpukan.
-- Ketika ditemui karakter kurung tutup, kita memeriksa apakah tumpukan kosong atau apakah karakter kurung buka yang sesuai berada di atas tumpukan. Jika tidak, itu berarti ekspresi tidak seimbang, dan fungsi mengembalikan `false`.
-- Jika karakter kurung tutup cocok dengan karakter kurung buka yang sesuai di tumpukan, kita menghapus karakter tersebut dari tumpukan.
-- Setelah iterasi selesai, jika tumpukan kosong, itu berarti semua kurung buka telah ditutup dengan benar, dan fungsi mengembalikan `true`; jika tidak, itu berarti masih ada kurung buka yang tidak tertutup, dan fungsi mengembalikan `false`.
-- Fungsi `main()` menggunakan fungsi `isBalancedParenthesis()` untuk memeriksa ekspresi `{()}[`, kemudian mencetak hasilnya ke konsol.
-
-### Contoh 8,5 : Konversi Infix menjadi Postfix 
-
-```cpp
-#include <iostream>
-#include <stack>
-#include <string>
-
-int precedence(char op) {
-    if (op == '^')
-        return 3;
-    else if (op == '*' || op == '/' || op == '%')
-        return 2;
-    else if (op == '+' || op == '-')
-        return 1;
-    else
-        return -1;
-}
-
-std::string infixToPostfix(const std::string& expn) {
-    std::stack<char> stk;
-    std::string output = "";
-    char temp;
-    for (char ch : expn) {
-        if (ch >= '0' && ch <= '9') {
-            output += ch;
-        } else {
-            switch (ch) {
-                case '+':
-                case '-':
-                case '*':
-                case '/':
-                case '%':
-                case '^':
-                    while (!stk.empty() && precedence(ch) <= precedence(stk.top())) {
-                        temp = stk.top();
-                        stk.pop();
-                        output += " ";
-                        output += temp;
-                    }
-                    stk.push(ch);
-                    output += " ";
-                    break;
-                case '(':
-                    stk.push(ch);
-                    break;
-                case ')':
-                    while (!stk.empty() && (temp = stk.top()) != '(') {
-                        stk.pop();
-                        output += " ";
-                        output += temp;
-                        output += " ";
-                    }
-                    stk.pop();
-                    break;
-            }
-        }
+    for (int i = 1; i <= 50; i++) {
+        q.remove();
     }
-    while (!stk.empty()) {
-        temp = stk.top();
-        stk.pop();
-        output += " ";
-        output += temp;
-    }
-    return output;
-}
-
-int main() {
-    std::string expn = "10+((3))*5/(16-4)";
-    std::string value = infixToPostfix(expn);
-    std::cout << "Infix Expn: " << expn << std::endl;
-    std::cout << "Postfix Expn: " << value << std::endl;
+    q.print();
 
     return 0;
 }
 ```
 ### Program di atas adalah
-mengimplementasikan fungsi `infixToPostfix` dalam bahasa C++. Fungsi ini bertujuan untuk mengonversi ekspresi matematika dalam bentuk infix menjadi bentuk postfix.
+mengimplementasikan kelas `Queue` dalam C++ yang memiliki kemampuan untuk menambahkan elemen baru, menghapus elemen, dan mencetak elemen-elemen yang tersisa dalam antrian. Berikut adalah rangkuman penjelasannya:
 
-- Fungsi `precedence` digunakan untuk menentukan prioritas operator. Operator dengan prioritas yang lebih tinggi memiliki nilai yang lebih tinggi.
-- Fungsi `infixToPostfix` menerima string `expn` yang merupakan ekspresi matematika dalam bentuk infix.
-- Selama iterasi melalui setiap karakter dalam `expn`, karakter angka ditambahkan langsung ke output, sedangkan operator dan tanda kurung diatur menggunakan tumpukan (`std::stack<char>`).
-- Ketika ditemukan operator, program memeriksa prioritasnya dengan operator di tumpukan. Jika prioritas operator yang baru lebih rendah atau sama dengan operator di tumpukan, operator di tumpukan dipindahkan ke output sebelum operator baru ditambahkan ke tumpukan.
-- Ketika ditemukan tanda kurung buka (`(`), program langsung menambahkannya ke tumpukan.
-- Ketika ditemukan tanda kurung tutup (`)`), program mengeluarkan operator dari tumpukan dan menambahkannya ke output sampai menemukan tanda kurung buka yang sesuai.
-- Setelah selesai iterasi, program mengeluarkan semua operator yang tersisa dari tumpukan ke output.
-- Fungsi `main` digunakan untuk menguji fungsi `infixToPostfix`, mengonversi ekspresi infix `"10+((3))*5/(16-4)"` menjadi bentuk postfix, dan mencetak hasilnya ke konsol.
+- Kelas `Queue` memiliki struktur data internal `Node`, yang memiliki dua anggota: `value` (nilai dari elemen) dan `next` (pointer ke node selanjutnya dalam antrian).
+- Kelas `Queue` memiliki tiga atribut data pribadi: `head` (pointer ke elemen pertama dalam antrian), `tail` (pointer ke elemen terakhir dalam antrian), dan `count` (jumlah elemen dalam antrian).
+- Metode `size()` digunakan untuk mengembalikan jumlah elemen dalam antrian.
+- Metode `Empty()` mengembalikan `true` jika antrian kosong, dan `false` jika tidak.
+- Metode `print()` mencetak semua elemen dalam antrian.
+- Metode `remove()` menghapus dan mengembalikan nilai dari elemen pertama dalam antrian. Jika antrian kosong, metode ini akan melemparkan pengecualian `std::runtime_error`.
+- Metode `add(int value)` menambahkan elemen baru ke dalam antrian. 
+- Destruktor (`~Queue()`) digunakan untuk membersihkan memori yang dialokasikan untuk elemen-elemen antrian.
+- Dalam fungsi `main()`, sebuah objek `q` dari kelas `Queue` dibuat. Kemudian, sebuah loop `for` digunakan untuk menambahkan 100 elemen ke dalam antrian. Setelah itu, loop `for` lainnya digunakan untuk menghapus 50 elemen pertama dari antrian. Akhirnya, elemen-elemen yang tersisa dalam antrian dicetak.
 
-### Contoh 8,6 : Konversi Infix menjadi Prefix
+### Contoh 9,5 : 
 
 ```cpp
 #include <iostream>
-#include <string>
 #include <stack>
-#include <algorithm>
+#include <stdexcept>
 
-int precedence(char op) {
-    if (op == '^')
-        return 3;
-    else if (op == '*' || op == '/' || op == '%')
-        return 2;
-    else if (op == '+' || op == '-')
-        return 1;
-    else
-        return -1;
-}
+class QueueUsingStack {
+private:
+    std::stack<int> stk1;
+    std::stack<int> stk2;
 
-void replaceParanthesis(char* a, int length) {
-    for (int i = 0; i < length; ++i) {
-        if (a[i] == '(') {
-            a[i] = ')';
-        } else if (a[i] == ')') {
-            a[i] = '(';
+public:
+    QueueUsingStack() {}
+
+    void add(int value) {
+        stk1.push(value);
+    }
+
+    int remove() {
+        int value;
+        if (!stk2.empty()) {
+            value = stk2.top();
+            stk2.pop();
+            return value;
         }
-    }
-}
-
-void reverseString(char* expn, int length) {
-    int lower = 0;
-    int upper = length - 1;
-    char tempChar;
-    while (lower < upper) {
-        tempChar = expn[lower];
-        expn[lower] = expn[upper];
-        expn[upper] = tempChar;
-        lower++;
-        upper--;
-    }
-}
-
-std::string infixToPostfix(std::string expn) {
-    std::stack<char> stk;
-    std::string output = "";
-    char temp;
-    for (char ch : expn) {
-        if (ch >= '0' && ch <= '9') {
-            output += ch;
-        } else {
-            switch (ch) {
-                case '+':
-                case '-':
-                case '*':
-                case '/':
-                case '%':
-                case '^':
-                    while (!stk.empty() && precedence(ch) <= precedence(stk.top())) {
-                        temp = stk.top();
-                        stk.pop();
-                        output += " ";
-                        output += temp;
-                    }
-                    stk.push(ch);
-                    output += " ";
-                    break;
-                case '(':
-                    stk.push(ch);
-                    break;
-                case ')':
-                    while (!stk.empty() && (temp = stk.top()) != '(') {
-                        stk.pop();
-                        output += " ";
-                        output += temp;
-                        output += " ";
-                    }
-                    stk.pop();
-                    break;
-            }
+        while (!stk1.empty()) {
+            value = stk1.top();
+            stk1.pop();
+            stk2.push(value);
         }
+        if (stk2.empty()) {
+            throw std::runtime_error("QueueEmptyException");
+        }
+        value = stk2.top();
+        stk2.pop();
+        return value;
     }
+};
+
+int main() {
+    QueueUsingStack que;
+    que.add(1);
+    que.add(11);
+    que.add(111);
+    std::cout << que.remove() << std::endl;
+    que.add(2);
+    que.add(21);
+    que.add(211);
+    std::cout << que.remove() << std::endl;
+    std::cout << que.remove() << std::endl;
+
+    return 0;
+}
+```
+### Program di atas adalah 
+implementasi dari antrian (queue) yang menggunakan dua tumpukan (stack) dalam bahasa C++.
+
+- Kelas `QueueUsingStack` memiliki dua tumpukan (`stk1` dan `stk2`) sebagai atribut data pribadi.
+- Metode `add(int value)` digunakan untuk menambahkan nilai ke dalam tumpukan pertama (`stk1`).
+- Metode `remove()` menghapus dan mengembalikan nilai dari antrian. Jika `stk2` tidak kosong, maka nilai langsung diambil dari `stk2`. Jika `stk2` kosong, maka nilai-nilai dari `stk1` dipindahkan ke `stk2` satu per satu, dan nilai paling atas dari `stk2` kemudian diambil dan dihapus.
+- Dalam fungsi `main()`, objek `que` dari kelas `QueueUsingStack` dibuat, nilai-nilai ditambahkan ke dalam antrian menggunakan `add()`, dan nilai-nilai kemudian dihapus dari antrian menggunakan `remove()` dan dicetak.
+
+### Permasalahan Reverse a Stack
+
+```cpp
+#include <iostream>
+#include <stack>
+#include <queue>
+
+
+void reverseStack(std::stack<int>& stk) {
+    std::queue<int> q;
+    
+  
     while (!stk.empty()) {
-        temp = stk.top();
+        q.push(stk.top());
         stk.pop();
-        output += " ";
-        output += temp;
     }
-    return output;
+    
+
+    while (!q.empty()) {
+        stk.push(q.front());
+        q.pop();
+    }
 }
 
-std::string infixToPrefix(std::string expn) {
-    std::reverse(expn.begin(), expn.end());
-    replaceParanthesis(&expn[0], expn.length());
-    expn = infixToPostfix(expn);
-    std::reverse(expn.begin(), expn.end());
-    return expn;
+
+void printStack(std::stack<int> stk) {
+    while (!stk.empty()) {
+        std::cout << stk.top() << " ";
+        stk.pop();
+    }
+    std::cout << std::endl;
 }
 
 int main() {
-    std::string expn = "10+((3))*5/(16-4)";
-    std::string value = infixToPrefix(expn);
-    std::cout << "Infix Expn: " << expn << std::endl;
-    std::cout << "Prefix Expn: " << value << std::endl;
-
-    return 0;
-}
-```
-### Program di atas adalah 
-sebuah program dalam bahasa C++ yang mengonversi ekspresi matematika dari bentuk infix menjadi bentuk prefix. 
-
-- Fungsi `precedence` digunakan untuk menentukan prioritas operator.
-- Fungsi `replaceParanthesis` digunakan untuk mengubah tanda kurung buka menjadi tanda kurung tutup, dan sebaliknya.
-- Fungsi `reverseString` digunakan untuk membalikkan string.
-- Fungsi `infixToPostfix` mengonversi ekspresi infix menjadi bentuk postfix.
-- Fungsi `infixToPrefix` mengonversi ekspresi infix menjadi bentuk prefix dengan cara membalikkan string, mengganti tanda kurung, mengonversi ke postfix, dan membalikkan kembali hasilnya.
-- Di dalam `main`, ekspresi infix `"10+((3))*5/(16-4)"` dikonversi menjadi bentuk prefix menggunakan fungsi `infixToPrefix`, dan hasilnya dicetak ke konsol.
-
-### Contoh 8,7 : Evaluasi Postfix
-
-```cpp
-#include <iostream>
-#include <stack>
-#include <string>
-
-int postfixEvaluate(std::string expn) {
     std::stack<int> stk;
-    size_t pos = 0;
-    while (pos < expn.length()) {
-        if (expn[pos] == ' ') {
-            pos++;
-            continue;
-        }
-        if (expn[pos] == '+' || expn[pos] == '-' || expn[pos] == '*' || expn[pos] == '/') {
-            int num2 = stk.top();
-            stk.pop();
-            int num1 = stk.top();
-            stk.pop();
-            switch (expn[pos]) {
-                case '+':
-                    stk.push(num1 + num2);
-                    break;
-                case '-':
-                    stk.push(num1 - num2);
-                    break;
-                case '*':
-                    stk.push(num1 * num2);
-                    break;
-                case '/':
-                    stk.push(num1 / num2);
-                    break;
-            }
-        } else {
-            int num = std::stoi(expn.substr(pos));
-            stk.push(num);
-            while (pos < expn.length() && expn[pos] != ' ')
-                pos++;
-        }
-        pos++;
-    }
-    return stk.top();
-}
-
-int main() {
-    std::string expn = "6 5 2 3 + 8 * + 3 + *";
-    int value = postfixEvaluate(expn);
-    std::cout << "Given Postfix Expn: " << expn << std::endl;
-    std::cout << "Result after Evaluation: " << value << std::endl;
+    
+    
+    stk.push(1);
+    stk.push(2);
+    stk.push(3);
+    stk.push(4);
+    stk.push(5);
+    
+    std::cout << "Original Stack: ";
+    printStack(stk);
+    
+    
+    reverseStack(stk);
+    
+    std::cout << "Reversed Stack: ";
+    printStack(stk);
+    
     return 0;
 }
 ```
-
 ### Program di atas adalah 
-implementasi dari evaluasi ekspresi postfix menggunakan stack dalam bahasa C++. 
+implementasi dari fungsi untuk membalikkan tumpukan menggunakan sebuah antrean dalam bahasa C++.
 
-- Fungsi `postfixEvaluate` mengambil string ekspresi postfix sebagai input dan mengembalikan hasil evaluasi ekspresi tersebut.
-- Dalam fungsi `postfixEvaluate`, kita menggunakan stack untuk menyimpan operan dan melakukan operasi ketika menemui operator.
-- Iterasi dilakukan pada string ekspresi postfix. Jika karakter yang ditemui adalah spasi, kita lanjutkan ke karakter berikutnya. Jika karakter adalah operator (`+`, `-`, `*`, `/`), kita ambil dua operand dari stack, lakukan operasi yang sesuai, dan hasilnya dimasukkan kembali ke stack.
-- Jika karakter adalah operand, kita konversi string menjadi integer menggunakan `std::stoi` dan masukkan nilai tersebut ke dalam stack. Kami memeriksa apakah karakter berikutnya adalah spasi untuk menemukan batas operand yang tepat.
-- Setelah iterasi selesai, nilai teratas dalam stack adalah hasil evaluasi ekspresi postfix, yang kemudian dikembalikan.
-- Di dalam fungsi `main`, kita menggunakan string ekspresi postfix `"6 5 2 3 + 8 * + 3 + *"` sebagai contoh, dan mencetak hasil evaluasinya.
+- Fungsi `reverseStack` menerima referensi ke tumpukan (`std::stack<int>&`) sebagai argumen dan melakukan langkah-langkah untuk membalikkan elemen-elemen dalam tumpukan menggunakan sebuah antrean.
+  - Pada langkah a, semua elemen dari tumpukan dipop satu per satu dan dimasukkan ke dalam sebuah antrean.
+  - Pada langkah b, semua elemen dari antrean dipop satu per satu dan dimasukkan kembali ke dalam tumpukan, sehingga menghasilkan tumpukan yang terbalik.
+- Fungsi `printStack` digunakan untuk mencetak elemen-elemen dalam tumpukan.
+- Dalam fungsi `main`, beberapa elemen dimasukkan ke dalam tumpukan, kemudian tumpukan tersebut dicetak, kemudian dibalikkan menggunakan fungsi `reverseStack`, dan hasilnya dicetak kembali.
 
-### Palindrome String Menggunakan Stack: 
+Program ini menunjukkan bagaimana kita dapat menggunakan sebuah antrean untuk membalikkan tumpukan. Dengan memanfaatkan sifat FIFO (First-In-First-Out) dari antrean, kita dapat membalikkan urutan elemen-elemen dalam tumpukan.
+
+### Permasalahan Reverse a Queue
 
 ```cpp
 #include <iostream>
+#include <queue>
 #include <stack>
-#include <string>
 
-bool isPalindrome(const std::string& str) {
-    std::stack<char> charStack;
-    int length = str.length();
 
-    // Push characters from the first half of the string into the stack
-    for (int i = 0; i < length / 2; ++i) {
-        charStack.push(str[i]);
+void reverseQueue(std::queue<int>& q) {
+    std::stack<int> stk;
+
+    
+    while (!q.empty()) {
+        stk.push(q.front());
+        q.pop();
     }
 
-    int i = length / 2 + (length % 2); // Starting index for comparison
-    while (!charStack.empty() && i < length) {
-        if (str[i] != charStack.top()) {
-            return false; // Not a palindrome
-        }
-        charStack.pop();
-        ++i;
+    
+    while (!stk.empty()) {
+        q.push(stk.top());
+        stk.pop();
     }
+}
 
-    return true; // Palindrome
+
+void printQueue(std::queue<int> q) {
+    while (!q.empty()) {
+        std::cout << q.front() << " ";
+        q.pop();
+    }
+    std::cout << std::endl;
 }
 
 int main() {
-    std::string str;
-    std::cout << "Enter a string: ";
-    std::cin >> str;
+    std::queue<int> q;
 
-    if (isPalindrome(str)) {
-        std::cout << "The string \"" << str << "\" is a palindrome." << std::endl;
-    } else {
-        std::cout << "The string \"" << str << "\" is not a palindrome." << std::endl;
-    }
+    
+    q.push(1);
+    q.push(2);
+    q.push(3);
+    q.push(4);
+    q.push(5);
+
+    std::cout << "Original Queue: ";
+    printQueue(q);
+
+    // Reverse the queue
+    reverseQueue(q);
+
+    std::cout << "Reversed Queue: ";
+    printQueue(q);
 
     return 0;
 }
 ```
-### Program di atas adalah 
-sebuah program C++ yang bertujuan untuk menentukan apakah sebuah string merupakan palindrome atau bukan menggunakan konsep stack. Berikut rangkuman penjelasan singkatnya:
 
-- Fungsi `isPalindrome` menerima sebuah string sebagai parameter dan mengembalikan nilai boolean yang menunjukkan apakah string tersebut adalah palindrome atau tidak.
-- Dalam fungsi `isPalindrome`, karakter-karakter dari setengah pertama string dimasukkan ke dalam stack.
-- Kemudian, dilakukan iterasi pada setengah kedua string untuk membandingkan karakternya dengan karakter yang dikeluarkan dari stack. Jika ada perbedaan, maka string tersebut bukan palindrome.
-- Program kemudian mencetak pesan yang sesuai berdasarkan hasil pengecekan.
-- Fungsi `main` mengambil input string dari pengguna dan memanggil fungsi `isPalindrome` untuk menentukan apakah string tersebut palindrome atau tidak.
+### Program di atas adalah 
+implementasi untuk membalikkan sebuah antrian (queue) menggunakan sebuah tumpukan (stack) dalam bahasa C++.
+
+- Fungsi `reverseQueue` menerima referensi ke sebuah antrian (`std::queue<int>&`) sebagai argumen dan melakukan langkah-langkah untuk membalikkan elemen-elemen dalam antrian menggunakan sebuah tumpukan.
+  - Pada langkah a, semua elemen dari antrian dipindahkan ke dalam sebuah tumpukan.
+  - Pada langkah b, semua elemen dari tumpukan dipindahkan kembali ke dalam antrian, sehingga menghasilkan antrian yang terbalik.
+- Fungsi `printQueue` digunakan untuk mencetak elemen-elemen dalam antrian.
+- Di dalam fungsi `main`, beberapa elemen dimasukkan ke dalam antrian, kemudian antrian tersebut dicetak, kemudian dibalikkan menggunakan fungsi `reverseQueue`, dan hasilnya dicetak kembali.
+
+Program ini menunjukkan cara menggunakan tumpukan untuk membalikkan urutan elemen-elemen dalam sebuah antrian. Dengan memanfaatkan sifat LIFO (Last-In-First-Out) dari tumpukan, kita dapat mencapai tujuan ini dengan mengeluarkan semua elemen dari antrian ke dalam tumpukan, lalu mengeluarkan kembali elemen-elemen tersebut dari tumpukan ke dalam antrian, sehingga menghasilkan antrian yang terbalik.
